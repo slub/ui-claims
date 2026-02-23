@@ -17,10 +17,14 @@ jest.mock('@folio/stripes-acq-components', () => ({
   AcqUnitFilter: () => 'AcqUnitFilter',
   CustomFieldsFilters: () => 'CustomFieldsFilters',
   LocationFilterContainer: () => 'LocationFilterContainer',
-  useMaterialTypes: jest.fn(() => ({ materialTypes: [], isLoading: false })),
   PluggableOrganizationFilter: () => 'PluggableOrganizationFilter',
   PluggableUserFilter: () => 'PluggableUserFilter',
   useAddresses: jest.fn(() => ({ addresses: [] })),
+}));
+
+jest.mock('@folio/stripes-acq-components/lib/hooks', () => ({
+  ...jest.requireActual('@folio/stripes-acq-components/lib/hooks'),
+  useMaterialTypes: jest.fn(() => ({ materialTypes: [], isLoading: false })),
 }));
 
 jest.mock('@folio/stripes/smart-components', () => ({
