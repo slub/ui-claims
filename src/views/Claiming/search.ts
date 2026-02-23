@@ -45,20 +45,26 @@ export const buildClaimingQuery = (activeFilters: ActiveFilters, sorting: ACQ.So
   const materialType = filters[FILTERS.MATERIAL_TYPE];
   const orderFormat = filters[FILTERS.ORDER_FORMAT];
 
-  if (materialType && orderFormat) {
+  const materialTypeValues = materialType ? flatten([materialType]) : [];
+
+  if (materialTypeValues.length && orderFormat) {
     materialTypeFilterQuery = flatten([orderFormat]).map((format) => {
       const orderFormatQuery = `poLine.orderFormat=="${format}"`;
 
-      const materialTypeQuery: string = ORDER_FORMAT_MATERIAL_TYPE_MAP[format]
-        .map((materialTypeCql: string) => `${materialTypeCql}=="${materialType}"`)
-        .join(' or ');
+      const materialTypeQueries = materialTypeValues.map((mt) => {
+        return ORDER_FORMAT_MATERIAL_TYPE_MAP[format]
+          .map((materialTypeCql: string) => `${materialTypeCql}=="${mt}"`)
+          .join(' or ');
+      });
 
-      return `(${orderFormatQuery} and (${materialTypeQuery}))`;
+      return `(${orderFormatQuery} and (${materialTypeQueries.join(' or ')}))`;
     }).join(' or ');
 
     materialTypeFilterQuery = `(${materialTypeFilterQuery})`;
-  } else if (materialType) {
-    materialTypeFilterQuery = `(poLine.eresource.materialType=="${materialType}" or poLine.physical.materialType=="${materialType}")`;
+  } else if (materialTypeValues.length) {
+    const mtQueries = materialTypeValues.map((mt) => `poLine.eresource.materialType=="${mt}" or poLine.physical.materialType=="${mt}"`);
+
+    materialTypeFilterQuery = `(${mtQueries.join(' or ')})`;
   }
 
   if (materialTypeFilterQuery) {

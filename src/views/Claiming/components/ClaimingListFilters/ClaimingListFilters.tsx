@@ -15,7 +15,6 @@ import {
   CustomFieldsFilters,
   getAddressOptions,
   LocationFilterContainer,
-  MaterialTypeFilterContainer,
   ORDER_FORMAT_OPTIONS,
   ORDER_TYPE_OPTIONS,
   PIECE_STATUS_OPTIONS,
@@ -27,6 +26,7 @@ import {
 
 import { CUSTOM_FIELDS_ENTITY_TYPE_PO_LINE } from '../../../../constants';
 import { FILTERS } from '../../constants';
+import MaterialTypeMultiSelectFilter from './MaterialTypeMultiSelectFilter';
 
 import type { ActiveFilters } from '../../types';
 
@@ -85,7 +85,7 @@ const ClaimingListFilters: React.FC<Props> = ({
         options={ORDER_TYPE_OPTIONS}
       />
 
-      <MaterialTypeFilterContainer
+      <MaterialTypeMultiSelectFilter
         id={`filter-${FILTERS.MATERIAL_TYPE}`}
         activeFilters={activeFilters[FILTERS.MATERIAL_TYPE]}
         disabled={disabled}
