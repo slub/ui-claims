@@ -45,6 +45,9 @@ jest.mock('@folio/stripes-acq-components', () => ({
   useFiltersToogle: jest.fn(() => ({ isFiltersOpened: true, toggleFilters: jest.fn() })),
   usePiecesStatusBatchUpdate: jest.fn(),
   useLocationSorting: jest.fn(),
+}));
+jest.mock('@folio/stripes-acq-components/lib/hooks', () => ({
+  ...jest.requireActual('@folio/stripes-acq-components/lib/hooks'),
   useMaterialTypes: jest.fn(() => ({ materialTypes: [], isLoading: false })),
 }));
 jest.mock('./hooks', () => ({

@@ -7,12 +7,11 @@ import {
   screen,
 } from '@folio/jest-config-stripes/testing-library/react';
 import userEvent from '@folio/jest-config-stripes/testing-library/user-event';
-import { useMaterialTypes } from '@folio/stripes-acq-components';
+import { useMaterialTypes } from '@folio/stripes-acq-components/lib/hooks';
 
 import MaterialTypeMultiSelectFilter from './MaterialTypeMultiSelectFilter';
 
-jest.mock('@folio/stripes-acq-components', () => ({
-  ...jest.requireActual('@folio/stripes-acq-components'),
+jest.mock('@folio/stripes-acq-components/lib/hooks', () => ({
   useMaterialTypes: jest.fn(),
 }));
 

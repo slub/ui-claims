@@ -2,7 +2,8 @@ import React, { useMemo } from 'react';
 
 import { MultiSelectionFilter } from '@folio/stripes/smart-components';
 import { FilterAccordion } from '@folio/stripes-acq-components';
-import { useMaterialTypes } from '@folio/stripes-acq-components';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { useMaterialTypes } from '@folio/stripes-acq-components/lib/hooks';
 
 interface Props {
   activeFilters?: ACQ.FilterValue;

@@ -7,7 +7,7 @@ declare module '*.css' {
   export = styles;
 }
 
-declare module '@folio/stripes-acq-components' {
+declare module '@folio/stripes-acq-components/lib/hooks' {
   export function useMaterialTypes(options?: {
     enabled?: boolean;
     tenantId?: string;
