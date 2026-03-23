@@ -22,6 +22,8 @@ import { useClaiming } from './hooks';
 
 jest.mock('@folio/stripes/smart-components', () => ({
   ...jest.requireActual('@folio/stripes/smart-components'),
+  // eslint-disable-next-line react/prop-types
+  PersistedPaneset: (props: { children: React.ReactNode }) => <div>{props.children}</div>,
   useCustomFields: jest.fn(() => ([[]])),
 }));
 jest.mock('@folio/stripes-acq-components', () => ({
@@ -49,8 +51,6 @@ jest.mock('./hooks', () => ({
   ...jest.requireActual('./hooks'),
   useClaiming: jest.fn(),
 }));
-
-const FORMAT = 'MM/DD/YYYY';
 
 const renderComponent = (props = {}) => render(
   <Claiming {...props} />,
@@ -124,13 +124,13 @@ describe('Claiming', () => {
 
       expect(screen.getByText('stripes-acq-components.claiming.modal.sendClaim.heading')).toBeInTheDocument();
 
-      /* Fill the form */
-      await act(async () => {
-        await userEvent.type(screen.getByRole('textbox', { name: 'stripes-acq-components.claiming.modal.sendClaim.field.claimExpiryDate' }), dayjs().add(5, 'days').format(FORMAT));
-      });
-      await act(async () => {
-        await userEvent.click(screen.getByRole('button', { name: 'stripes-acq-components.FormFooter.save' }));
-      });
+      /* Fill the form - use the Datepicker's placeholder as the format
+         to be locale-independent (the Datepicker derives its format from the system locale) */
+      const sendDateInput = screen.getByRole('textbox', { name: 'stripes-acq-components.claiming.modal.sendClaim.field.claimExpiryDate' });
+      const sendDateFormat = (sendDateInput as HTMLInputElement).placeholder;
+
+      await userEvent.type(sendDateInput, dayjs().add(5, 'days').format(sendDateFormat));
+      await userEvent.click(screen.getByRole('button', { name: 'stripes-acq-components.FormFooter.save' }));
 
       expect(sendClaims).toHaveBeenCalled();
     });
@@ -159,13 +159,12 @@ describe('Claiming', () => {
 
       expect(screen.getByText('stripes-acq-components.claiming.modal.delayClaim.heading')).toBeInTheDocument();
 
-      /* Fill the form */
-      await act(async () => {
-        await userEvent.type(screen.getByRole('textbox', { name: 'stripes-acq-components.claiming.modal.delayClaim.field.delayTo' }), dayjs().add(5, 'days').format(FORMAT));
-      });
-      await act(async () => {
-        await userEvent.click(screen.getByRole('button', { name: 'stripes-acq-components.FormFooter.save' }));
-      });
+      /* Fill the form - use the Datepicker's placeholder as the format */
+      const delayDateInput = screen.getByRole('textbox', { name: 'stripes-acq-components.claiming.modal.delayClaim.field.delayTo' });
+      const delayDateFormat = (delayDateInput as HTMLInputElement).placeholder;
+
+      await userEvent.type(delayDateInput, dayjs().add(5, 'days').format(delayDateFormat));
+      await userEvent.click(screen.getByRole('button', { name: 'stripes-acq-components.FormFooter.save' }));
 
       expect(delayClaims).toHaveBeenCalled();
     });
