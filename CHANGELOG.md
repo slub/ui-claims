@@ -7,6 +7,7 @@
 * [UICLAIM-21](https://issues.folio.org/browse/UICLAIM-21) *BREAKING* Update for Split Search & Browse APIs.
 * [UICLAIM-23](https://issues.folio.org/browse/UICLAIM-23) Include global `stripes-core.settings.read` permission in base permission sets.
 * [UICLAIM-26](https://folio-org.atlassian.net/browse/UICLAIM-26) Fix failing tests in Claiming.test.tsx.
+* [UICLAIM-25](https://folio-org.atlassian.net/browse/UICLAIM-25) Replace single-select Material Type filter with multi-select.
 
 ## [1.0.0](https://github.com/folio-org/ui-claims/tree/v1.0.0) (2025-03-12)
 
