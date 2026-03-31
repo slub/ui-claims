@@ -62,9 +62,9 @@ export const buildClaimingQuery = (activeFilters: ActiveFilters, sorting: ACQ.So
 
     materialTypeFilterQuery = `(${materialTypeFilterQuery})`;
   } else if (materialTypeValues.length) {
-    const mtQueries = materialTypeValues.map((mt) => `poLine.eresource.materialType=="${mt}" or poLine.physical.materialType=="${mt}"`);
+    const mtvList = materialTypeValues.map((mt) => `"${mt}"`).join(' or ');
 
-    materialTypeFilterQuery = `(${mtQueries.join(' or ')})`;
+    materialTypeFilterQuery = `(poLine.eresource.materialType==(${mtvList}) or poLine.physical.materialType==(${mtvList}))`;
   }
 
   if (materialTypeFilterQuery) {
