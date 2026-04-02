@@ -32,7 +32,6 @@ jest.mock('@folio/stripes-acq-components', () => ({
   AcqUnitFilter: () => 'AcqUnitFilter',
   CustomFieldsFilters: () => 'CustomFieldsFilters',
   LocationFilterContainer: () => 'LocationFilterContainer',
-  MaterialTypeFilterContainer: () => 'MaterialTypeFilterContainer',
   PluggableOrganizationFilter: () => 'PluggableOrganizationFilter',
   PluggableUserFilter: () => 'PluggableUserFilter',
   useAddresses: jest.fn(() => ({ addresses: [] })),
@@ -44,6 +43,7 @@ jest.mock('@folio/stripes-acq-components', () => ({
   useClaimsDelay: jest.fn(),
   useClaimsSend: jest.fn(),
   useFiltersToogle: jest.fn(() => ({ isFiltersOpened: true, toggleFilters: jest.fn() })),
+  useMaterialTypes: jest.fn(() => ({ materialTypes: [], isLoading: false })),
   usePiecesStatusBatchUpdate: jest.fn(),
   useLocationSorting: jest.fn(),
 }));
