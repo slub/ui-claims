@@ -14,6 +14,9 @@ import {
 import { CLAIM_SEQUENCES_API } from '../../../../../../constants';
 import type { ClaimSequence } from '../types';
 
+// Same as for the effective configs, so reopening the modal soon after reuses the list
+const STALE_TIME = 30_000;
+
 interface Options {
   enabled: boolean;
 }
@@ -45,6 +48,7 @@ export const useClaimSequencesById = ({ enabled }: Options): ReturnData => {
       .json<ClaimSequencesResponse>(),
     enabled,
     retry: false,
+    staleTime: STALE_TIME,
   });
 
   const sequencesById = useMemo<Record<string, ClaimSequence>>(
