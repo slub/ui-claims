@@ -57,6 +57,8 @@ import {
   ClaimingListFilters,
   GroupByOrgActionMenuItem,
   MarkUnreceivableModal,
+  SendClaimPreviewActionMenuItem,
+  SendClaimPreviewModal,
 } from './components';
 import {
   CLAIMING_HIDDEN_LIST_COLUMNS,
@@ -109,6 +111,7 @@ export const Claiming: React.FC = () => {
   const { isFiltersOpened, toggleFilters } = useFiltersToogle(namespace);
   const [isClaimDelayModalOpen, toggleClaimDelayModal] = useModalToggle();
   const [isClaimSendModalOpen, toggleClaimSendModal] = useModalToggle();
+  const [isClaimSendPreviewModalOpen, toggleClaimSendPreviewModal] = useModalToggle();
   const [isMarkUnreceivableModalOpen, toggleMarkUnreceivableModalOpen] = useModalToggle();
 
   const [
@@ -170,6 +173,9 @@ export const Claiming: React.FC = () => {
 
   const { handlerErrorResponse } = useClaimErrorsHandler();
 
+  // Holds the whole records, so pieces selected on other pages are included
+  const selectedClaims = useMemo(() => Object.values(selectedRecordsMap) as ACQ.Claim[], [selectedRecordsMap]);
+
   const columnMapping = useMemo(() => {
     return getResultsListColumnMapping({
       disabled: isFetching,
@@ -211,6 +217,14 @@ export const Claiming: React.FC = () => {
               onClick={(e) => {
                 onToggle(e);
                 toggleClaimSendModal();
+              }}
+            />
+
+            <SendClaimPreviewActionMenuItem
+              disabled={!selectedRecordsLength}
+              onClick={(e) => {
+                onToggle(e as unknown as Event | undefined);
+                toggleClaimSendPreviewModal();
               }}
             />
           </IfPermission>
@@ -450,6 +464,13 @@ export const Claiming: React.FC = () => {
         onCancel={toggleClaimSendModal}
         onSubmit={onClaimsSend}
       />
+
+      {isClaimSendPreviewModalOpen && (
+        <SendClaimPreviewModal
+          claims={selectedClaims}
+          onCancel={toggleClaimSendPreviewModal}
+        />
+      )}
 
       <MarkUnreceivableModal
         claimsCount={selectedRecordsLength}

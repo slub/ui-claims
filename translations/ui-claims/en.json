@@ -48,6 +48,7 @@
   "claiming.filters.purchaseOrder.shipTo": "Ship to",
 
   "claiming.action.groupByOrganization": "Group by organization",
+  "claiming.action.sendClaimPreview": "Send claim PoC",
   "claiming.delayClaim.success.message": "Claims are successfully delayed.",
   "claiming.delayClaim.error.message": "Failure on delay claims.",
   "claiming.sendClaim.modal.message": "Claim <b>{count, number}</b> {count, plural, one {piece} other {pieces}}?",
