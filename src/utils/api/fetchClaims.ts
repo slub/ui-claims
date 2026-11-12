@@ -37,6 +37,9 @@ export const fetchClaims = (httpClient: HTTPClient) => async (options: HTTPClien
         vendorCode: vendor.code,
         vendorName: vendor.name,
         poLineNumber: poLine.poLineNumber,
+        vendorId,
+        acquisitionMethod: poLine.acquisitionMethod,
+        claimSequenceId: poLine.claimSequenceId,
       };
     }),
     totalRecords,
