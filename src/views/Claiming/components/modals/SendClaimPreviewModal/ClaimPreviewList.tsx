@@ -22,18 +22,28 @@ const VISIBLE_COLUMNS = ['selected', 'title', 'vendor', 'nextStage', 'sentVia', 
 
 type Column = typeof VISIBLE_COLUMNS[number];
 
-// Fixed widths switch off the MCL measuring, so long texts wrap instead of widening the modal
-const COLUMN_WIDTHS: Partial<Record<Column, string>> = {
+// Fixed widths switch off the MCL measuring, so long texts wrap instead of widening the modal.
+// Status fits "Ready to send" and the date header fits on one line; the sum stays below the
+// width of a large modal.
+const COLUMN_WIDTHS: Record<Column, string> = {
   selected: '40px',
-  title: '170px',
+  title: '180px',
   vendor: '110px',
   nextStage: '130px',
   sentVia: '150px',
-  claimExpiryDate: '100px',
+  claimExpiryDate: '140px',
   stageNote: '160px',
+  status: '130px',
 };
 
 const MESSAGE_PREFIX = 'ui-claims.claiming.sendClaimPreview';
+
+// The full title stays available as a tooltip
+const MAX_TITLE_LENGTH = 50;
+
+const truncate = (value = '', maxLength = MAX_TITLE_LENGTH): string => (
+  value.length > maxLength ? `${value.slice(0, maxLength)}…` : value
+);
 
 const addDays = (days: number): Date => {
   const date = new Date();
@@ -86,11 +96,12 @@ export const ClaimPreviewList: React.FC<Props> = ({
         aria-label={intl.formatMessage({ id: `${MESSAGE_PREFIX}.selectPiece` }, { title: claim.title })}
       />
     ),
+    // MCL cells are flex rows, the wrapper keeps the lines stacked
     title: ({ claim }) => (
-      <>
-        <div>{claim.title}</div>
+      <div>
+        <div title={claim.title}>{truncate(claim.title)}</div>
         {claim.displaySummary && <div>{claim.displaySummary}</div>}
-      </>
+      </div>
     ),
     vendor: ({ claim }) => claim.vendorName || claim.vendorCode || <NoValue />,
     nextStage: ({ isCompleted, nextStage, stageCount }) => {
@@ -112,7 +123,11 @@ export const ClaimPreviewList: React.FC<Props> = ({
 
       if (!configs.length) return <NoValue />;
 
-      return configs.map((config) => <div key={config.id}>{formatConfig(config)}</div>);
+      return (
+        <div>
+          {configs.map((config) => <div key={config.id}>{formatConfig(config)}</div>)}
+        </div>
+      );
     },
     claimExpiryDate: ({ hasSequence, isSelectable, nextStage }) => {
       if (nextStage) return <FormattedDate value={addDays(nextStage.stage.interval)} />;

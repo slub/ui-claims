@@ -13,6 +13,7 @@ import {
   Col,
   Datepicker,
   Headline,
+  Layout,
   Loading,
   MessageBanner,
   Modal,
@@ -99,12 +100,14 @@ export const SendClaimPreviewModal: React.FC<Props> = ({
 
   const renderSection = (id: string, headingId: string, list: typeof rows) => (
     <>
-      <Headline size="medium" margin="medium">
-        <FormattedMessage
-          id={headingId}
-          values={{ selected: countSelected(list), total: list.length }}
-        />
-      </Headline>
+      <Layout className="marginTop1">
+        <Headline size="medium" margin="xx-small">
+          <FormattedMessage
+            id={headingId}
+            values={{ selected: countSelected(list), total: list.length }}
+          />
+        </Headline>
+      </Layout>
       <ClaimPreviewList
         id={id}
         rows={list}
@@ -165,9 +168,11 @@ export const SendClaimPreviewModal: React.FC<Props> = ({
           </>
         )}
 
-        <Headline size="medium" margin="medium">
-          <FormattedMessage id={`${MESSAGE_PREFIX}.section.notes`} values={{ count: selectedCount }} />
-        </Headline>
+        <Layout className="marginTop1">
+          <Headline size="medium" margin="xx-small">
+            <FormattedMessage id={`${MESSAGE_PREFIX}.section.notes`} values={{ count: selectedCount }} />
+          </Headline>
+        </Layout>
         <Row>
           <Col xs={6}>
             <TextArea
