@@ -12,6 +12,7 @@ import type {
 
 import { RESPONSE_ERROR_CODE } from '../../constants';
 import {
+  claimSequenceCompletedStrategy,
   expectedLateStatusForPieceStrategy,
   genericErrorStrategy,
   noIntegrationStrategy,
@@ -38,6 +39,13 @@ export const useClaimErrorsHandler = (): ClaimErrorsHandlerReturnType => {
     switch (errorCode) {
       case RESPONSE_ERROR_CODE.cannotFindPiecesWithLatestStatusToProcess: {
         handler.handle(expectedLateStatusForPieceStrategy({
+          callback: getCallback(errorCode),
+          showCallout,
+        }));
+        break;
+      }
+      case RESPONSE_ERROR_CODE.claimSequenceCompleted: {
+        handler.handle(claimSequenceCompletedStrategy({
           callback: getCallback(errorCode),
           showCallout,
         }));

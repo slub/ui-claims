@@ -64,6 +64,7 @@ export const ORDER_FORMAT_MATERIAL_TYPE_MAP = {
 
 export const RESPONSE_ERROR_CODE = {
   cannotFindPiecesWithLatestStatusToProcess: 'cannotFindPiecesWithLatestStatusToProcess',
+  claimSequenceCompleted: 'claimSequenceCompleted',
   genericError: 'genericError',
   unableToGenerateClaimsForOrgNoIntegrationDetails: 'unableToGenerateClaimsForOrgNoIntegrationDetails',
 } as const;

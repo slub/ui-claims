@@ -3,10 +3,7 @@ import React, {
   useCallback,
   useMemo,
 } from 'react';
-import {
-  FormattedMessage,
-  useIntl,
-} from 'react-intl';
+import { useIntl } from 'react-intl';
 import {
   useHistory,
   useLocation,
@@ -57,8 +54,6 @@ import {
   ClaimingListFilters,
   GroupByOrgActionMenuItem,
   MarkUnreceivableModal,
-  SendClaimPreviewActionMenuItem,
-  SendClaimPreviewModal,
 } from './components';
 import {
   CLAIMING_HIDDEN_LIST_COLUMNS,
@@ -81,10 +76,23 @@ interface DelayClaimsFormValues {
 }
 
 interface SendClaimsFormValues {
-  claimingDate: string;
+  claimingDate?: string;
+  claimingInterval: number;
+  claimingPieceIds: string[];
   externalNote: string;
   internalNote: string;
 }
+
+interface SendClaimsPreviewModalProps {
+  claims: ACQ.Claim[];
+  disabled: boolean;
+  onCancel: () => void;
+  onSubmit: (values: SendClaimsFormValues) => Promise<void>;
+  open: boolean;
+}
+
+// TODO: drop the cast once `claims` is part of the SendClaimsModal props in @folio/stripes-types
+const SendClaimsPreviewModal = SendClaimsModal as unknown as React.FC<SendClaimsPreviewModalProps>;
 
 const resetData = noop;
 
@@ -111,7 +119,6 @@ export const Claiming: React.FC = () => {
   const { isFiltersOpened, toggleFilters } = useFiltersToogle(namespace);
   const [isClaimDelayModalOpen, toggleClaimDelayModal] = useModalToggle();
   const [isClaimSendModalOpen, toggleClaimSendModal] = useModalToggle();
-  const [isClaimSendPreviewModalOpen, toggleClaimSendPreviewModal] = useModalToggle();
   const [isMarkUnreceivableModalOpen, toggleMarkUnreceivableModalOpen] = useModalToggle();
 
   const [
@@ -219,14 +226,6 @@ export const Claiming: React.FC = () => {
                 toggleClaimSendModal();
               }}
             />
-
-            <SendClaimPreviewActionMenuItem
-              disabled={!selectedRecordsLength}
-              onClick={(e) => {
-                onToggle(e as unknown as Event | undefined);
-                toggleClaimSendPreviewModal();
-              }}
-            />
           </IfPermission>
 
           <IfPermission perm="orders.pieces.collection.put">
@@ -268,16 +267,18 @@ export const Claiming: React.FC = () => {
     />
   );
 
+  // The modal passes the checked pieces only, with the interval already worked out
   const onClaimsSend = useCallback(async ({
-    claimingDate,
+    claimingInterval,
+    claimingPieceIds,
     externalNote,
     internalNote,
   }: SendClaimsFormValues) => {
     try {
       await sendClaims({
         data: {
-          claimingInterval: getClaimingIntervalFromDate(claimingDate),
-          claimingPieceIds: Object.keys(selectedRecordsMap),
+          claimingInterval,
+          claimingPieceIds,
           externalNote,
           internalNote,
         },
@@ -296,6 +297,9 @@ export const Claiming: React.FC = () => {
             [RESPONSE_ERROR_CODE.cannotFindPiecesWithLatestStatusToProcess]: ({ pieceIds }) => {
               resetOtherSelectedRecordsByIds(pieceIds);
             },
+            [RESPONSE_ERROR_CODE.claimSequenceCompleted]: ({ pieceIds }) => {
+              resetOtherSelectedRecordsByIds(pieceIds);
+            },
           },
           defaultMessageId: 'ui-claims.claiming.sendClaim.error.message',
         },
@@ -309,7 +313,6 @@ export const Claiming: React.FC = () => {
     refetch,
     resetAllSelectedRecords,
     resetOtherSelectedRecordsByIds,
-    selectedRecordsMap,
     sendClaims,
     showCallout,
     toggleClaimSendModal,
@@ -451,24 +454,13 @@ export const Claiming: React.FC = () => {
         onSubmit={onClaimsDelay}
       />
 
-      <SendClaimsModal
-        claimsCount={selectedRecordsLength}
-        disabled={isSendClaimLoading}
-        message={(
-          <FormattedMessage
-            id="ui-claims.claiming.sendClaim.modal.message"
-            values={{ count: selectedRecordsLength }}
-          />
-        )}
-        open={isClaimSendModalOpen}
-        onCancel={toggleClaimSendModal}
-        onSubmit={onClaimsSend}
-      />
-
-      {isClaimSendPreviewModalOpen && (
-        <SendClaimPreviewModal
+      {isClaimSendModalOpen && (
+        <SendClaimsPreviewModal
           claims={selectedClaims}
-          onCancel={toggleClaimSendPreviewModal}
+          disabled={isSendClaimLoading}
+          open
+          onCancel={toggleClaimSendModal}
+          onSubmit={onClaimsSend}
         />
       )}
 

@@ -1,1 +1,0 @@
-export { SendClaimPreviewModal } from './SendClaimPreviewModal';
