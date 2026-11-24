@@ -1,4 +1,4 @@
-export { claimSequenceCompletedStrategy } from './claimSequenceCompletedStrategy';
+export { claimSequenceErrorStrategy } from './claimSequenceErrorStrategy';
 export { expectedLateStatusForPieceStrategy } from './expectedLateStatusForPieceStrategy';
 export { genericErrorStrategy } from './genericErrorStrategy';
 export { noIntegrationStrategy } from './noIntegrationStrategy';

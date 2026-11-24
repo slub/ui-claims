@@ -52,6 +52,7 @@
   "claiming.delayClaim.error.message": "Failure on delay claims.",
   "claiming.sendClaim.modal.message": "Claim <b>{count, number}</b> {count, plural, one {piece} other {pieces}}?",
   "claiming.sendClaim.success.message": "Claims are currently being processed. Please check Export manager for job status.",
+  "claiming.sendClaim.success.manual.message": "Manual stage: {count, plural, one {# piece was} other {# pieces were}} set to \"Claim sent\". FOLIO did not send a claim.",
   "claiming.sendClaim.error.message": "Failure on send claims.",
   "claiming.markUnreceivable.modal.heading": "Mark unreceivable",
   "claiming.markUnreceivable.modal.message": "Mark <b>{count, number}</b> {count, plural, one {piece} other {pieces}} unreceivable?",
@@ -59,6 +60,9 @@
   "claiming.markUnreceivable.error.message": "Failure on mark unreceivable",
 
   "error.code.claimSequenceCompleted": "The claim sequence is completed for at least one of the selected pieces.",
+  "error.code.claimSequenceInactive": "The claim sequence of at least one of the selected pieces is inactive.",
+  "error.code.claimSequenceNotFound": "The claim sequence of at least one of the selected pieces does not exist.",
+  "error.code.claimSequenceStageRequiresIntegration": "For at least one of the selected pieces no claiming integration matches the transmission method of the claim sequence stage.",
   "error.code.cannotFindPiecesWithLatestStatusToProcess": "Cannot find pieces with \"Late\" status to process.",
   "error.code.unableToGenerateClaimsForOrgNoIntegrationDetails": "Unable to generate claims for <b>{orgCodes}</b> because no claim integrations exist.",
   

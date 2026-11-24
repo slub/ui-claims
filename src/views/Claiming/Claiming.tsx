@@ -3,7 +3,10 @@ import React, {
   useCallback,
   useMemo,
 } from 'react';
-import { useIntl } from 'react-intl';
+import {
+  FormattedMessage,
+  useIntl,
+} from 'react-intl';
 import {
   useHistory,
   useLocation,
@@ -89,6 +92,11 @@ interface SendClaimsPreviewModalProps {
   onCancel: () => void;
   onSubmit: (values: SendClaimsFormValues) => Promise<void>;
   open: boolean;
+}
+
+// TODO: drop once @folio/stripes-types knows the claim sequence fields of the claiming results
+interface ClaimingPieceResult {
+  deliveryType?: 'MANUAL' | 'INTEGRATION';
 }
 
 // TODO: drop the cast once `claims` is part of the SendClaimsModal props in @folio/stripes-types
@@ -275,7 +283,7 @@ export const Claiming: React.FC = () => {
     internalNote,
   }: SendClaimsFormValues) => {
     try {
-      await sendClaims({
+      const response = await sendClaims({
         data: {
           claimingInterval,
           claimingPieceIds,
@@ -284,8 +292,26 @@ export const Claiming: React.FC = () => {
         },
       });
 
+      // Pieces at a manual stage only change their status, no export job is created for them
+      const results = (response?.claimingPieceResults ?? []) as ClaimingPieceResult[];
+      const manualCount = results.filter(({ deliveryType }) => deliveryType === 'MANUAL').length;
+
       resetAllSelectedRecords();
-      showCallout({ messageId: 'ui-claims.claiming.sendClaim.success.message' });
+
+      if (!results.length || manualCount < results.length) {
+        showCallout({ messageId: 'ui-claims.claiming.sendClaim.success.message' });
+      }
+
+      if (manualCount > 0) {
+        showCallout({
+          message: (
+            <FormattedMessage
+              id="ui-claims.claiming.sendClaim.success.manual.message"
+              values={{ count: manualCount }}
+            />
+          ),
+        });
+      }
     } catch (errors) {
       await handlerErrorResponse(
         errors.response as Response,
@@ -298,6 +324,15 @@ export const Claiming: React.FC = () => {
               resetOtherSelectedRecordsByIds(pieceIds);
             },
             [RESPONSE_ERROR_CODE.claimSequenceCompleted]: ({ pieceIds }) => {
+              resetOtherSelectedRecordsByIds(pieceIds);
+            },
+            [RESPONSE_ERROR_CODE.claimSequenceInactive]: ({ pieceIds }) => {
+              resetOtherSelectedRecordsByIds(pieceIds);
+            },
+            [RESPONSE_ERROR_CODE.claimSequenceNotFound]: ({ pieceIds }) => {
+              resetOtherSelectedRecordsByIds(pieceIds);
+            },
+            [RESPONSE_ERROR_CODE.claimSequenceStageRequiresIntegration]: ({ pieceIds }) => {
               resetOtherSelectedRecordsByIds(pieceIds);
             },
           },

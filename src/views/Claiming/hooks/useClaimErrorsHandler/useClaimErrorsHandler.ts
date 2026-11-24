@@ -12,7 +12,7 @@ import type {
 
 import { RESPONSE_ERROR_CODE } from '../../constants';
 import {
-  claimSequenceCompletedStrategy,
+  claimSequenceErrorStrategy,
   expectedLateStatusForPieceStrategy,
   genericErrorStrategy,
   noIntegrationStrategy,
@@ -44,9 +44,13 @@ export const useClaimErrorsHandler = (): ClaimErrorsHandlerReturnType => {
         }));
         break;
       }
-      case RESPONSE_ERROR_CODE.claimSequenceCompleted: {
-        handler.handle(claimSequenceCompletedStrategy({
+      case RESPONSE_ERROR_CODE.claimSequenceCompleted:
+      case RESPONSE_ERROR_CODE.claimSequenceInactive:
+      case RESPONSE_ERROR_CODE.claimSequenceNotFound:
+      case RESPONSE_ERROR_CODE.claimSequenceStageRequiresIntegration: {
+        handler.handle(claimSequenceErrorStrategy({
           callback: getCallback(errorCode),
+          code: errorCode,
           showCallout,
         }));
         break;

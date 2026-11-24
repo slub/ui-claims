@@ -3,14 +3,21 @@ import type {
   ResponseErrorsContainer,
 } from '@folio/stripes-acq-components';
 
-import type { ErrorHandlingStrategyBaseParams } from './handlers';
+import type {
+  ErrorHandlingStrategyBaseParams,
+  ResponseErrorCode,
+} from './handlers';
 
-import { RESPONSE_ERROR_CODE } from '../../../constants';
+interface ErrorHandlingStrategyParams extends ErrorHandlingStrategyBaseParams {
+  code: ResponseErrorCode,
+}
 
-export const claimSequenceCompletedStrategy = ({
+// For the errors mod-orders reports per piece when the claim sequence of its PO line cannot be applied
+export const claimSequenceErrorStrategy = ({
   callback,
+  code,
   showCallout,
-}: ErrorHandlingStrategyBaseParams): ErrorHandlingStrategy => {
+}: ErrorHandlingStrategyParams): ErrorHandlingStrategy => {
   const handle = async (errorsContainer: ResponseErrorsContainer) => {
     const error = errorsContainer.getError();
 
@@ -21,7 +28,7 @@ export const claimSequenceCompletedStrategy = ({
     await callback?.({ pieceIds });
 
     showCallout({
-      messageId: `ui-claims.error.code.${RESPONSE_ERROR_CODE.claimSequenceCompleted}`,
+      messageId: `ui-claims.error.code.${code}`,
       type: 'error',
     });
   };

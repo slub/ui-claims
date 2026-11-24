@@ -16,9 +16,11 @@ declare namespace ACQ {
   }
 
   interface Piece {
-    claimSequence?: {
-      id: string;
-      stage?: number;
+    claim?: {
+      sequence?: {
+        id: string;
+        stage?: number;
+      };
     };
   }
 
